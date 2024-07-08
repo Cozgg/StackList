@@ -1,0 +1,86 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+using namespace std;
+#define MAX 100
+
+struct Stack {
+	int a[MAX];
+	int top;
+};
+
+void init(Stack &s) {
+	s.top = -1;
+}
+
+void push(Stack &s, int x) {
+	s.a[++s.top] = x;
+}
+
+int pop(Stack &s) {
+	return s.a[s.top--];
+}
+
+bool isEmpty(Stack s) {
+	return s.top == -1;
+}
+
+void convertToBin(int x) {
+	Stack s;
+	init(s);
+	while (x != 0) {
+		int tam = x % 2;
+		push(s, tam);
+		x /= 2;
+	}
+	while (!isEmpty(s))
+	{
+		cout << pop(s);
+	}
+	cout << endl;
+}
+
+void calExp(char str[]) {
+	Stack s;
+	init(s);
+
+	int t = 0;
+	char *p = strtok(str, " ");
+	while (p != NULL) {
+		if (isdigit(*p)) {
+			push(s, atoi(p));
+		}
+		else {
+			int b = pop(s);
+			int a = pop(s);
+			switch (*p)
+			{
+			case '+':
+				t = a + b;
+				break;
+			case '-':
+				t = a - b;
+				break;
+			case '*':
+				t = a * b;
+				break;
+			case '/':
+				t = a / b;
+				break;
+			}
+			push(s, t);
+		}
+		p = strtok(NULL, " ");
+	}
+	cout << pop(s) << endl;
+}
+
+int main() {
+
+	/*convertToBin(13);*/
+
+	char str[] = "2 4 6 + * 5 / 1 -";
+
+	calExp(str);
+
+	return 1;
+}
