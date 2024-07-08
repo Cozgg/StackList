@@ -1,0 +1,169 @@
+#include<iostream>
+
+using namespace std;
+//Khai bao cau truc danh sach
+struct dNode {
+	int info;
+	dNode* pre;
+	dNode* next;
+};
+
+struct dList {
+	dNode* head;
+	dNode* tail;
+};
+//Tao danh sach rong
+void init(dList& l) {
+	l.head = NULL;
+	l.tail = NULL;
+}
+//Duyet danh sach tu dau 
+void Process_list(dList& l) {
+	dNode* p;
+	p = l.head;
+	while (p != NULL) {
+		cout << p->info << endl;
+		p = p->next;
+	}
+}
+//Duyet danh sach tu cuoi
+void Process_list_begin_last(dList& l) {
+	dNode* p;
+	p = l.tail;
+	while (p != NULL) {
+		cout << p->info << endl;
+		p = p->pre;
+	}
+}
+//tao node va gan gia tri
+
+dNode* createdNode(int x) {
+	dNode* p;
+	p = new dNode;
+	if (p == NULL) {
+		cout << "khong con du bo nho";
+		return p;
+	}
+	else {
+		p->info = x;
+		p->next = NULL;
+		p->pre = NULL;
+		return p;
+	}
+}
+
+//Them phan tu vao dau danh sach( TH danh sach khong co phan tu nao)
+void insertHead(dList& l, int x) {
+	dNode* p;
+	p = createdNode(x);
+	if (p == NULL) {
+		cout << "Khong tao duoc node!";
+		return;
+	}
+	if (l.head == NULL) {
+		l.head = p;
+		l.tail = l.head;
+	}
+	else {
+		p->next = l.head;
+		l.head->pre = p;
+		l.head = p;
+	}
+}
+//Them phan tu vao cuoi danh sach( TH danh sach khong co phan tu nao)
+void insertTail(dList& l, int x) {
+	dNode* p = createdNode(x);
+	if (p == NULL) {
+		cout << "Khong tao duoc nut moi!";
+	}
+	if (l.head == NULL) {//danh sach rong
+		l.head = p;
+		l.tail = l.head;
+	}
+	else {//danh sach khong rong
+		p->pre = l.tail;
+		l.tail->next = p;
+		l.tail = p;
+	}
+}
+//Xoa phan tu dau danh sach
+void DeleteFirst(dList& l) {
+	dNode* p;
+	if (l.head != NULL) {
+		p = l.head;
+		l.head = l.head->next;
+		l.head->pre = NULL;
+		delete p;
+		if (l.head == NULL) {
+			l.tail = NULL;
+		}
+	}
+}
+//Xoa cuoi danh sach
+void DeleteLast(dList& l) {
+	dNode* p;
+	if (l.head != NULL) {
+		p = l.tail;
+		l.tail = l.tail->pre;
+		l.tail->next = NULL;
+		delete p;
+		if (l.tail == NULL) {
+			l.head = NULL;
+		}
+	}
+}
+//Tim va xoa phan tu 
+void Find_and_del(dList& l, int x) {
+	if (l.head == NULL) return;
+	if (l.head->info == x) {
+		DeleteFirst(l);
+		return;
+	}
+	dNode* q = l.head;
+	while (q->next != NULL && q->next->info != x) {
+		q = q->next;
+	}
+	if (q->next != NULL) {
+		dNode* tmp = q->next;
+		q->next = q->next->next;
+		if (q->next != NULL) {
+			q->next->pre = q;
+		}
+		else {
+			l.tail = q;
+		}
+		delete tmp;
+	}
+}
+//Xoa danh sach 
+void destroyList(dList& l) {
+	dNode* p;
+	while (l.head != NULL) {
+		p = l.head;
+		l.head = l.head->next;
+		delete p;
+	}
+	l.tail = NULL;
+}
+
+int main() {
+	system("Color 25");
+	dList l;
+	init(l);
+
+	insertHead(l, 10);
+	insertHead(l, 20);
+	insertTail(l, 30);
+	insertTail(l, 40);
+
+	Process_list(l);
+
+
+	Find_and_del(l, 20);
+
+	cout << "===============Da xoa================" << endl;
+	Process_list(l);
+
+	destroyList(l);
+	return 1;
+}
